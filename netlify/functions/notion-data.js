@@ -2,8 +2,8 @@
 // Fetches KPI records from Notion for a given snapshot date
 // Your NOTION_API_KEY is stored securely in Netlify environment variables — never in the code
 
-const NOTION_DB_KPI     = '39ad6ddc-a3fe-4702-b72f-57d3b33ee614';
-const NOTION_DB_TRACKER = 'fc58d188-8d92-46aa-b394-5dfabd10c232';
+const NOTION_DB_KPI     = '62acc593e3334b47b0a00db478727473';
+const NOTION_DB_TRACKER = '9756229bf42d44d6986bb05984e5254a';
 const NOTION_VERSION    = '2022-06-28';
 
 async function queryDatabase(dbId, filter, apiKey, startCursor) {
