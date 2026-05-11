@@ -10,3 +10,8 @@
   from = "/topline"
   to   = "/topline.html"
   status = 200
+  
+[[redirects]]
+  from = "/underperformers"
+  to   = "/underperformers.html"
+  status = 200
