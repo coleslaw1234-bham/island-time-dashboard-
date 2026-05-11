@@ -76,18 +76,22 @@ function pageToKPI(page) {
 
 function pageToTracker(page) {
   const p = page.properties;
+  // Unit title is stored as compound key "0001MW|2026-05-04|JUN 2026|F9"
+  // Extract just the alias (first segment before |)
+  const rawTitle = propVal(p, 'Unit', 'title') || '';
+  const unitAlias = rawTitle.split('|')[0].trim();
   return {
-    unit:         propVal(p, 'Unit Alias',     'text'),
+    unit:         unitAlias,
     name:         propVal(p, 'Unit Name',      'text'),
     bedrooms:     parseInt(String(propVal(p, 'Bedrooms','select')||'0').replace(/\D/g,''))||0,
     direction:    propVal(p, 'Direction',      'select')?.toLowerCase() || 'raise',
     arrivalMonth: propVal(p, 'Arrival Month',  'select')?.split(' ')[0] || 'MAY',
-    flagNum:      propVal(p, 'Flag Num',       'text'),
+    flagNum:      propVal(p, 'Flag Num',       'number') != null ? 'F' + propVal(p, 'Flag Num', 'number') : propVal(p, 'Flag ID', 'text'),
     flagId:       propVal(p, 'Flag ID',        'text'),
     addedDate:    propVal(p, 'Entry Date',     'date'),
     baseGN:       propVal(p, 'Base GN',        'number'),
-    baseOccCy:    propVal(p, 'Base OCC CY',    'number'),
-    baseOccSdly:  propVal(p, 'Base OCC SDLY',  'number'),
+    baseOccCy:    propVal(p, 'Base Occ CY',    'number'),
+    baseOccSdly:  propVal(p, 'Base Occ SDLY',  'number'),
     baseRevCy:    propVal(p, 'Base Rev CY',    'number'),
     baseRevSdly:  propVal(p, 'Base Rev SDLY',  'number'),
     sessionLabel: propVal(p, 'Session Label',  'text'),
