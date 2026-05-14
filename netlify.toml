@@ -1,5 +1,5 @@
 [build]
-  functions = "netlify/functions"
+  functions = "functions"
 
 [[headers]]
   for = "/*"
@@ -7,11 +7,16 @@
     X-Frame-Options = "SAMEORIGIN"
 
 [[redirects]]
-  from = "/topline"
-  to   = "/topline.html"
+  from = "/"
+  to   = "/indexit.html"
   status = 200
-  
+
+[[redirects]]
+  from = "/topline"
+  to   = "/toplineit.html"
+  status = 200
+
 [[redirects]]
   from = "/underperformers"
-  to   = "/underperformers.html"
+  to   = "/underperformersit.html"
   status = 200
