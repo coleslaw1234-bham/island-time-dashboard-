@@ -1,9 +1,10 @@
 // netlify/functions/notion-data.js
+// ISLAND TIME
 // Fetches KPI records from Notion for a given snapshot date
 // Your NOTION_API_KEY is stored securely in Netlify environment variables — never in the code
 
-const NOTION_DB_KPI     = '39ad6ddc-a3fe-4702-b72f-57d3b33ee614';
-const NOTION_DB_TRACKER = 'fc58d188-8d92-46aa-b394-5dfabd10c232';
+const NOTION_DB_KPI     = '62acc593e3334b47b0a00db478727473';
+const NOTION_DB_TRACKER = '9756229bf42d44d6986bb05984e5254a';
 const NOTION_VERSION    = '2022-06-28';
 
 async function queryDatabase(dbId, filter, apiKey, startCursor) {
@@ -76,18 +77,20 @@ function pageToKPI(page) {
 
 function pageToTracker(page) {
   const p = page.properties;
+  const rawTitle = propVal(p, 'Unit', 'title') || '';
+  const unitAlias = rawTitle.split('|')[0].trim();
   return {
-    unit:         propVal(p, 'Unit Alias',     'text'),
+    unit:         unitAlias,
     name:         propVal(p, 'Unit Name',      'text'),
     bedrooms:     parseInt(String(propVal(p, 'Bedrooms','select')||'0').replace(/\D/g,''))||0,
     direction:    propVal(p, 'Direction',      'select')?.toLowerCase() || 'raise',
     arrivalMonth: propVal(p, 'Arrival Month',  'select')?.split(' ')[0] || 'MAY',
-    flagNum:      propVal(p, 'Flag Num',       'text'),
+    flagNum:      propVal(p, 'Flag Num',       'number') != null ? 'F' + propVal(p, 'Flag Num', 'number') : propVal(p, 'Flag ID', 'text'),
     flagId:       propVal(p, 'Flag ID',        'text'),
     addedDate:    propVal(p, 'Entry Date',     'date'),
     baseGN:       propVal(p, 'Base GN',        'number'),
-    baseOccCy:    propVal(p, 'Base OCC CY',    'number'),
-    baseOccSdly:  propVal(p, 'Base OCC SDLY',  'number'),
+    baseOccCy:    propVal(p, 'Base Occ CY',    'number'),
+    baseOccSdly:  propVal(p, 'Base Occ SDLY',  'number'),
     baseRevCy:    propVal(p, 'Base Rev CY',    'number'),
     baseRevSdly:  propVal(p, 'Base Rev SDLY',  'number'),
     sessionLabel: propVal(p, 'Session Label',  'text'),
@@ -130,7 +133,6 @@ exports.handler = async (event) => {
 
   try {
     if (type === 'kpis') {
-      // Fetch KPI records for one or two snapshot dates
       const snapDates = snapDate.includes(',') ? snapDate.split(',') : [snapDate];
       const allRecords = [];
 
@@ -151,9 +153,7 @@ exports.handler = async (event) => {
     }
 
     if (type === 'tracker') {
-      // Fetch all tracker entries
       const pages = await fetchAllPages(NOTION_DB_TRACKER, null, apiKey);
-      // Group into sessions by entry date
       const sessionMap = {};
       pages.forEach(page => {
         const entry = pageToTracker(page);
